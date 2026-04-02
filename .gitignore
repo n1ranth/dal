@@ -1,0 +1,66 @@
+# --- Secrets & environment (never commit real values) ---
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.production.local
+.env.test.local
+!.env.example
+!**/.env.example
+
+# Backend / local API keys
+backend/.env
+
+# --- Dependencies & builds ---
+node_modules/
+.next/
+out/
+dist/
+build/
+coverage/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+.venv/
+venv/
+**/venv/
+
+# --- Vercel & deploy ---
+.vercel
+
+# --- OS & editors ---
+.DS_Store
+Thumbs.db
+.idea/
+*.swp
+*.swo
+
+# --- Logs & debug ---
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# --- Certificates & keys ---
+*.pem
+*.key
+*.p12
+id_rsa
+id_rsa.pub
+
+# --- Cursor: local MCP / secrets if you ever copy config into the repo ---
+# Keys in Cursor Settings → MCP are stored on your machine, not in this folder by default.
+# Ignore common filenames if they are created locally under the project.
+.cursor/mcp.json
+.cursor/mcp.config.json
+.cursor/mcp*.local.json
+
+# --- Frontend specific ---
+frontend/.next/
+frontend/out/
+frontend/build/
+frontend/.DS_Store
