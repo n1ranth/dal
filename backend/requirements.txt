@@ -23,3 +23,5 @@ aiofiles==23.2.1
 # Optional: For enhanced ML capabilities
 # transformers==4.30.0  # For advanced text analysis
 # torch==2.0.1        # PyTorch for ML models
+
+requests
