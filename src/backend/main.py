@@ -10,7 +10,7 @@ load_dotenv()
 # Import your modules
 from analyzer.quality import analyze_dataset
 from analyzer.suggestions import generate_column_suggestions
-from ai.openrouter import get_ai_insights
+from ai.openrouter import get_ai_report, has_real_openrouter_key
 
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
@@ -33,28 +33,67 @@ def home():
     return {"message": "Dataset Analyzer API running"}
 
 
+def _format_sections_as_text(sections: dict[str, list[str]]) -> str:
+    lines: list[str] = []
+    ordered = ["ABOUT DATASET", "RISKS", "BIAS", "CLEANING", "ML IMPACT", "METADATA"]
+    for section in ordered:
+        lines.append(f"{section}:")
+        items = sections.get(section, [])
+        if not items:
+            lines.append("- No additional insights.")
+        else:
+            for item in items:
+                lines.append(f"- {item}")
+        lines.append("")
+    return "\n".join(lines).strip()
+
+
 @app.post("/analyze")
 async def analyze(file: UploadFile = File(...)):
     try:
+        if not has_real_openrouter_key():
+            return Response(
+                content=json.dumps(
+                    {
+                        "error": "AI API is not connected. Set OPENROUTER_API_KEY to run analysis.",
+                        "ai_status": "disabled_missing_key",
+                    }
+                ),
+                status_code=503,
+                media_type="application/json",
+            )
+
         # Read dataset
         df = pd.read_csv(file.file, on_bad_lines='skip')
 
-        # Run analysis
-        analysis = analyze_dataset(df)
+        # Run local scripts only as signal extraction for AI.
+        local_analysis = analyze_dataset(df)
+        local_suggestions = generate_column_suggestions(df)
 
-        # Column-wise suggestions (AI does not auto-apply; only proposes)
-        suggestions = generate_column_suggestions(df)
+        # AI returns the final score/risk assessment using extracted signals.
+        ai_report = get_ai_report(local_analysis, local_suggestions)
+        local_analysis["quality_score"] = ai_report["quality_score"]
+        local_analysis["risk_flags"] = ai_report["risk_flags"]
+        ai_output = _format_sections_as_text(ai_report["sections"])
 
-        # Get AI insights
-        ai_output = get_ai_insights(analysis)
-
-        # Debug print
-        print("AI OUTPUT:", ai_output)
+        # Let the AI also decide per-suggestion confidence (fallback to local if missing).
+        suggestions_conf_map = ai_report.get("suggestions_confidence_by_key", {})
+        for s in local_suggestions:
+            try:
+                key = f"{s.get('column')}::{s.get('fill_method')}"
+                conf = suggestions_conf_map.get(key)
+                if conf:
+                    s["confidence"] = conf.get("confidence", s.get("confidence"))
+                    if conf.get("reason"):
+                        s["reason"] = conf.get("reason")
+            except Exception:
+                continue
 
         return {
-            "analysis": analysis,
+            "analysis": local_analysis,
             "ai_insights": ai_output,
-            "suggestions": suggestions,
+            "ai_status": "enabled",
+            "suggestions": local_suggestions,
         }
 
     except Exception as e:

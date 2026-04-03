@@ -224,6 +224,7 @@ function LabelDistributionPanel({
 type AnalyzeResponse = {
   analysis?: AnalysisResult;
   ai_insights?: string;
+  ai_status?: "enabled" | "disabled_missing_key";
   suggestions?: ColumnSuggestion[];
 };
 
@@ -349,6 +350,11 @@ export default function Home() {
 
     return sections;
   }, [result]);
+
+  const hasAiContent = useMemo(
+    () => Object.values(aiSections).some((items) => Array.isArray(items) && items.length > 0),
+    [aiSections]
+  );
 
   const biasingSignals = useMemo(() => {
     const analysis = result?.analysis;
@@ -479,6 +485,7 @@ export default function Home() {
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Backend error while analyzing file.";
+      setResult(null);
       setActivityLog((prev) => [`Analysis failed: ${message}`, ...prev]);
       alert(`Analyze failed: ${message}`);
     } finally {
@@ -827,6 +834,12 @@ export default function Home() {
                                     </p>
                                 </div>
                                 <div className="mt-2 space-y-3">
+                                  {result?.ai_status === "disabled_missing_key" && !hasAiContent ? (
+                                    <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-3 text-sm text-amber-200">
+                                      AI insights are disabled: missing OpenRouter API key. Quality metrics and
+                                      suggestions shown elsewhere are local backend calculations.
+                                    </div>
+                                  ) : null}
                                   {[
                                     ["ABOUT DATASET", "About Dataset"],
                                     ["RISKS", "Risks"],
@@ -922,7 +935,8 @@ export default function Home() {
                         <CardTitle className="text-base">Suggestions</CardTitle>
                         <CardDescription className="text-lg">
                           Apply fixes column-by-column. Nothing auto-runs. Confidence bands (High /
-                          Medium / Low) reflect how safe each suggested fix is expected to be.
+                          Medium / Low) are AI-generated confidence in how safe each suggested fix is
+                          expected to be.
                         </CardDescription>
                       </CardHeader>
                       <CardContent className="px-4">
