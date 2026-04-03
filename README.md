@@ -1,6 +1,6 @@
 # DAL - AI Powered Dataset Analyzer
 
-A modern web application for dataset analysis and insights powered by artificial intelligence.
+A modern web application for dataset analysis and insights powered by AI.
 
 ## Overview
 
@@ -31,15 +31,20 @@ DAL (Dataset Analyzer & Logger) is a comprehensive tool that provides AI-driven 
 ## Project Structure
 
 ```
-dataset/
-├── frontend/                 # Next.js frontend application
-│   ├── app/                # Next.js app router
-│   ├── components/          # Reusable UI components
-│   ├── lib/                # Utility functions
-│   └── public/             # Static assets
-├── backend/                 # Python API server
-├── my-app/                 # Frontend build output
-└── README.md               # This file
+.root
+├── src
+│   ├── backend
+│   │   ├── ai                 # Analysis Engine
+│   │   └── analyzer           # Analysis output generator
+│   │
+│   └── frontend               # Next.js frontend application
+│       ├── app                # Next.js app router
+│       ├── components         # Reusable UI components
+│       ├── lib                # Utility functions
+│       ├── node_modules       # Modules used in development
+│       └── public             # Static assets
+│
+└── README.md
 ```
 
 ## Getting Started
@@ -55,7 +60,7 @@ dataset/
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
-   cd dataset
+   cd <cloned-repository>
    ```
 
 2. **Install frontend dependencies**
@@ -69,7 +74,7 @@ dataset/
 3. **Install backend dependencies**
    ```bash
    cd backend
-   pip install -r requirements.txt
+   docker build -t dal-backend .
    ```
 
 4. **Start the development servers**
@@ -84,8 +89,7 @@ dataset/
 
    Backend:
    ```bash
-   cd backend
-   python app.py
+   docker run -p 8000:8000 dal-backend
    ```
 
 5. **Access the application**
@@ -133,12 +137,4 @@ npm run lint         # Run ESLint
 - `components/ui/` - Reusable UI components
 - `lib/` - Utility functions and configurations
 - `components/hero-webgl-background.tsx` - 3D animated background
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
 
