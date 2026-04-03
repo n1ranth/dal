@@ -66,7 +66,7 @@ DAL (Dataset Analyzer & Logger) is a comprehensive tool that provides AI-driven 
 2. **Install frontend dependencies**
    ```bash
    cd src/frontend
-   npm install
+   npm install # (recommended)
    # or
    yarn install
    ```
@@ -82,7 +82,7 @@ DAL (Dataset Analyzer & Logger) is a comprehensive tool that provides AI-driven 
    Frontend:
    ```bash
    cd src/frontend
-   npm run dev
+   npm run dev # (recommended)
    # or
    yarn dev
    ```
@@ -92,6 +92,12 @@ DAL (Dataset Analyzer & Logger) is a comprehensive tool that provides AI-driven 
    cd src/backend
    docker run -p 8000:8000 dal-backend
    ```
+
+   > Advice: Run backend services first<br>
+   > In case of permission issues run:
+   >```
+   >sudo docker run -p 8000:8000 dal-backend
+   >```
 
 5. **Access the application**
    - Frontend: http://localhost:3000
