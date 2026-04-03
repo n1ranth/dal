@@ -1,147 +1,181 @@
-# DAL - AI Powered Dataset Analyzer
+# DAL — AI-Powered Dataset Analyzer
 
-A modern web application for dataset analysis and insights powered by AI.
+A full-stack application for automated dataset inspection, quality evaluation, and AI-assisted preprocessing.
 
 ## Overview
 
-DAL (Dataset Analyzer & Logger) is a comprehensive tool that provides AI-driven analysis of datasets, offering insights into data quality, potential biases, cleaning recommendations, and ML impact assessments.
+**DAL (Dataset Analyzer & Logger)** is designed to accelerate the data preparation lifecycle. It ingests structured datasets and produces:
 
-## Features
+* Data quality diagnostics
+* Bias and leakage detection
+* Cleaning and preprocessing recommendations
+* ML-readiness assessments
 
-- **Dataset Upload & Analysis**: Support for CSV, JSON, XLSX, and Parquet files
-- **Quality Scoring**: Automated assessment of dataset completeness and quality metrics
-- **Bias Detection**: Identification of potential biases and data leakage risks
-- **Smart Suggestions**: AI-powered recommendations for data cleaning and preprocessing
-- **Interactive Visualizations**: Charts and graphs for data distribution analysis
-- **Real-time Processing**: Fast analysis with detailed reporting
+The system targets developers, data scientists, and ML engineers who want rapid, actionable insights before model training.
 
-## Tech Stack
+## Core Capabilities
+
+* **Multi-format Ingestion:**
+  Supports CSV, JSON, XLSX, and Parquet.
+* **Data Quality Scoring:**
+  Evaluates completeness, consistency, and structural integrity.
+* **Bias & Leakage Detection:**
+  Identifies skewed distributions, proxy variables, and leakage risks.
+* **AI-Assisted Recommendations:**
+  Suggests transformations, imputations, and feature-level fixes.
+* **Visualization Layer:**
+  Interactive charts for distributions and feature relationships.
+* **Low-Latency Processing:**
+  Near real-time analysis with structured outputs.
+
+## Architecture
 
 ### Frontend
-- **Framework**: Next.js 16.2.2 with React 19.2.4
-- **Styling**: Tailwind CSS 4.2.2 with shadcn/ui components
-- **3D Graphics**: React Three Fiber with Three.js for animated backgrounds
-- **TypeScript**: Full type safety throughout the application
-- **UI Components**: Radix UI primitives with custom styling
+
+* Next.js (App Router)
+* React (latest stable)
+* TypeScript (strict mode)
+* Tailwind CSS + shadcn/ui
+* React Three Fiber (visual layer enhancements)
 
 ### Backend
-- **API**: RESTful API (Python-based, see backend directory)
-- **Analysis Engine**: Advanced ML and statistical analysis tools
 
-## Project Structure
+* Python-based REST API
+* Containerized via Docker
+* Modular analysis pipeline:
+  * `ai/` → inference + reasoning layer
+  * `analyzer/` → structured report generation
+
+## Repository Structure
 
 ```
 .root
 ├── src
 │   ├── backend
-│   │   ├── ai                 # Analysis Engine
-│   │   └── analyzer           # Analysis output generator
+│   │   ├── ai/          # Model interaction + reasoning
+│   │   └── analyzer/    # Output generation + scoring
 │   │
-│   └── frontend               # Next.js frontend application
-│       ├── app                # Next.js app router
-│       ├── components         # Reusable UI components
-│       ├── lib                # Utility functions
-│       ├── node_modules       # Modules used in development
-│       └── public             # Static assets
+│   └── frontend
+│       ├── app/         # Next.js App Router
+│       ├── components/  # UI components
+│       ├── lib/         # Utilities and config
+│       └── public/      # Static assets
 │
 └── README.md
 ```
 
-## Getting Started
+## Setup
 
 ### Prerequisites
 
-- Node.js 18+ 
-- npm or yarn package manager
-- Python 3.8+ (for backend)
+* Node.js ≥ 18
+* npm or yarn
+* Python ≥ 3.8
+* Docker
 
-### Installation
+## Installation
 
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd <cloned-repository>
-   ```
+### 1. Clone
 
-2. **Install frontend dependencies**
-   ```bash
-   cd src/frontend
-   npm install # (recommended)
-   # or
-   yarn install
-   ```
+```bash
+git clone <repository-url>
+cd <repository>
+```
 
-3. **Install backend dependencies**
-   ```bash
-   cd src/backend
-   docker build -t dal-backend .
-   ```
+### 2. Frontend Setup
 
-4. **Start the development servers**
+```bash
+cd src/frontend
+npm install
+```
 
-   Frontend:
-   ```bash
-   cd src/frontend
-   npm run dev # (recommended)
-   # or
-   yarn dev
-   ```
+### 3. Backend Setup (Docker)
 
-   Backend:
-   ```bash
-   cd src/backend
-   docker run -p 8000:8000 dal-backend
-   ```
+```bash
+cd src/backend
+docker build -t dal-backend .
+```
 
-   > Advice: Run backend services first<br>
-   > In case of permission issues run:
-   >```
-   >sudo docker run -p 8000:8000 dal-backend
-   >```
+### 4. Environment Configuration
 
-5. **Access the application**
-   - Frontend: http://localhost:3000
-   - Backend API: http://localhost:8000
+#### Backend
 
-## Environment Variables
+```bash
+cd src/backend
+cp .env.example .env
+```
 
-Create a `.env` file in the frontend directory:
+Edit `.env`:
+
+```env
+OPENROUTER_API_KEY=your_api_key_here
+```
+
+#### Frontend
+
+```bash
+cd src/frontend
+```
+
+Create `.env`:
 
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
 
-## Usage
+### 5. Run Services
 
-1. **Upload Dataset**: Click "Open Upload Flow" or drag & drop files
-2. **View Analysis**: Navigate through different tabs:
-   - **Dataset**: File preview and basic metrics
-   - **Charts**: Visual analysis and distributions
-   - **Insights**: AI-generated analysis and recommendations
-   - **Biasing**: Bias detection and risk assessment
-   - **Suggestions**: Automated cleaning recommendations
-   - **Activity**: Analysis history and logs
+#### Backend
 
-## API Endpoints
+```bash
+docker run -p 8000:8000 dal-backend
+```
 
-- `POST /analyze` - Upload and analyze dataset
-- `POST /apply_suggestions` - Apply cleaning recommendations
+If permission issues occur:
+
+```bash
+sudo docker run -p 8000:8000 dal-backend
+```
+
+#### Frontend
+
+```bash
+cd src/frontend
+npm run dev
+```
+
+### 6. Access
+
+* Frontend: [http://localhost:3000](http://localhost:3000)
+* Backend: [http://localhost:8000](http://localhost:8000)
+
+## API Surface
+
+| Method | Endpoint             | Description                         |
+| ------ | -------------------- | ----------------------------------- |
+| POST   | `/analyze`           | Upload + analyze dataset            |
+| POST   | `/apply_suggestions` | Apply preprocessing recommendations |
+
+## Usage Flow
+
+1. Upload dataset (drag/drop or file picker)
+2. Inspect generated sections:
+   * Dataset summary
+   * Visualizations
+   * Insights
+   * Bias analysis
+   * Suggestions
+   * Activity logs
+3. Apply recommended transformations
 
 ## Development
 
-### Available Scripts
+### Scripts
 
 ```bash
-npm run dev          # Start development server
-npm run build        # Build for production
-npm run start        # Start production server
-npm run lint         # Run ESLint
+npm run dev      # Development server
+npm run build    # Production build
+npm run start    # Production runtime
+npm run lint     # Linting
 ```
-
-### Component Structure
-
-- `app/page.tsx` - Main application page
-- `components/ui/` - Reusable UI components
-- `lib/` - Utility functions and configurations
-- `components/hero-webgl-background.tsx` - 3D animated background
 
